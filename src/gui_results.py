@@ -96,7 +96,7 @@ class ResultsViewer:
         bottom_frame = ttk.Frame(parent)
         bottom_frame.pack(fill=tk.BOTH, expand=True, pady=10)
 
-        # 创建F1分数柱状图
+        # 创建 F1 分数柱状图
         fig1 = plt.Figure(figsize=(6, 4), dpi=100)
         ax1 = fig1.add_subplot(111)
 
@@ -104,9 +104,9 @@ class ResultsViewer:
         f1_scores = [results[c]["f1-score"] for c in classes]
 
         ax1.bar(classes, f1_scores, color="skyblue")
-        ax1.set_title("各类别F1分数")
+        ax1.set_title("各类别 F1 分数")
         ax1.set_xlabel("类别")
-        ax1.set_ylabel("F1分数")
+        ax1.set_ylabel("F1 分数")
         ax1.tick_params(axis="x", rotation=90)
 
         canvas1 = FigureCanvasTkAgg(fig1, master=top_frame)
@@ -130,7 +130,7 @@ class ResultsViewer:
         canvas2.get_tk_widget().pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
 
         # 创建表格
-        columns = ("类别", "精确率", "召回率", "F1分数", "样本数")
+        columns = ("类别", "精确率", "召回率", "F1 分数", "样本数")
         self.tree = ttk.Treeview(bottom_frame, columns=columns, show="headings")
 
         # 设置列宽和标题

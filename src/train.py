@@ -246,9 +246,9 @@ def plot_class_accuracy(results, filename):
 
     plt.figure(figsize=(12, 6))
     plt.bar(classes, f1_scores, color="skyblue")
-    plt.title("各类别F1分数")
+    plt.title("各类别 F1 分数")
     plt.xlabel("类别")
-    plt.ylabel("F1分数")
+    plt.ylabel("F1 分数")
     plt.xticks(rotation=45, ha="right")
     plt.tight_layout()
     plt.savefig(filename)

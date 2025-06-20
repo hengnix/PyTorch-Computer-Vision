@@ -60,12 +60,12 @@ uv run python src/gui_predict.py
 
 项目支持识别以下 36 种水果和蔬菜：
 
-**水果 (13种)：**
+**水果 (13 种)：**
 - 苹果 (apple)、香蕉 (banana)、葡萄 (grapes)、奇异果 (kiwi)
 - 柠檬 (lemon)、芒果 (mango)、橙子 (orange)、梨 (pear)
 - 菠萝 (pineapple)、石榴 (pomegranate)、西瓜 (watermelon)
 
-**蔬菜 (23种)：**
+**蔬菜 (23 种)：**
 - 甜菜根 (beetroot)、甜椒 (bell pepper)、卷心菜 (cabbage)、辣椒 (capsicum)
 - 胡萝卜 (carrot)、花椰菜 (cauliflower)、辣椒 (chilli pepper)、玉米 (corn)
 - 黄瓜 (cucumber)、茄子 (eggplant)、大蒜 (garlic)、生姜 (ginger)

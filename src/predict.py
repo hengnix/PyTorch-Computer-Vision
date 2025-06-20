@@ -31,7 +31,7 @@ def load_model(model_path):
 
 
 def predict(image_path, model_path, top_k=5):
-    """对单张图像进行预测，返回前k个预测结果"""
+    """对单张图像进行预测，返回前 k 个预测结果"""
     # 加载模型
     model, classes, device = load_model(model_path)
 
@@ -59,7 +59,7 @@ def predict(image_path, model_path, top_k=5):
         output = model(image_tensor)
         probabilities = torch.softmax(output, 1)
 
-        # 获取前k个预测结果
+        # 获取前 k 个预测结果
         top_probs, top_indices = torch.topk(probabilities, top_k)
         top_probs = top_probs.cpu().numpy()[0]
         top_indices = top_indices.cpu().numpy()[0]
@@ -84,7 +84,7 @@ def main():
     parser = argparse.ArgumentParser(description="水果和蔬菜图像分类预测")
     parser.add_argument("--image", type=str, required=True, help="输入图像路径")
     parser.add_argument("--model", type=str, required=True, help="模型文件路径")
-    parser.add_argument("--top_k", type=int, default=5, help="显示前k个预测结果")
+    parser.add_argument("--top_k", type=int, default=5, help="显示前 k 个预测结果")
 
     args = parser.parse_args()
 

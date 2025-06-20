@@ -31,7 +31,7 @@ class FruitVegClassifierGUI:
         self.check_model()
 
     def create_widgets(self):
-        """创建GUI界面组件"""
+        """创建 GUI 界面组件"""
         # 顶部菜单
         self.create_menu()
 
@@ -253,7 +253,7 @@ class FruitVegClassifierGUI:
 
             # 按时间排序，获取最新的文件
             results_files.sort(reverse=True)
-            latest_results_file = results_files[0]  # 尝试导入ResultsViewer类
+            latest_results_file = results_files[0]  # 尝试导入 ResultsViewer 类
             try:
                 from src.gui_results import ResultsViewer
             except ImportError:
@@ -263,7 +263,7 @@ class FruitVegClassifierGUI:
 
                     ResultsViewer = gui_results.ResultsViewer
                 except ImportError:
-                    raise ImportError("无法找到ResultsViewer类")
+                    raise ImportError("无法找到 ResultsViewer 类")
 
             # 打开结果查看窗口
             results_window = tk.Toplevel(self.root)
@@ -282,10 +282,10 @@ class FruitVegClassifierGUI:
         ttk.Label(
             about_window, text="水果和蔬菜分类器", font=("Arial", 16, "bold")
         ).pack(pady=20)
-        ttk.Label(about_window, text="版本: 1.0.0").pack(pady=5)
-        ttk.Label(about_window, text="基于PyTorch和深度学习技术").pack(pady=5)
+        ttk.Label(about_window, text="版本：1.0.0").pack(pady=5)
+        ttk.Label(about_window, text="基于 PyTorch 和深度学习技术").pack(pady=5)
         ttk.Label(about_window, text="用于识别常见水果和蔬菜").pack(pady=5)
-        ttk.Label(about_window, text="© 2023 水果和蔬菜分类器团队").pack(pady=20)
+        ttk.Label(about_window, text="© 2025 水果和蔬菜分类器团队").pack(pady=20)
 
         ttk.Button(about_window, text="确定", command=about_window.destroy).pack(
             pady=10

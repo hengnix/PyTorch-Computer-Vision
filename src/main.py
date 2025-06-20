@@ -6,8 +6,8 @@ warnings.filterwarnings("ignore", category=UserWarning, module="PIL")
 
 
 if __name__ == "__main__":
-    # 数据集路径（需要包含train、val、test三个子文件夹）
-    data_dir = "E:/PythonProject/fru_veg_classfier2/dataset"
+    # 数据集路径（需要包含 train、val、test 三个子文件夹）
+    data_dir = "D:\\Workspace\\PyTorch-Computer-Vision\\dataset"
 
     # 训练参数
     num_epochs = 50
