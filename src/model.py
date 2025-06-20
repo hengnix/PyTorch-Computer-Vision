@@ -10,6 +10,7 @@ class FruitVegClassifier(nn.Module):
         try:
             # 新版本 (torchvision >= 0.13)
             from torchvision.models.resnet import ResNet18_Weights
+
             self.model = models.resnet18(weights=ResNet18_Weights.IMAGENET1K_V2)
         except (ImportError, AttributeError):
             # 旧版本
@@ -17,8 +18,7 @@ class FruitVegClassifier(nn.Module):
 
         # 修改分类层并添加Dropout
         self.model.fc = nn.Sequential(
-            nn.Dropout(0.5),
-            nn.Linear(self.model.fc.in_features, num_classes)
+            nn.Dropout(0.5), nn.Linear(self.model.fc.in_features, num_classes)
         )
 
     def forward(self, x):

@@ -1,8 +1,9 @@
 import warnings
+
+from src.train import train_model
+
 warnings.filterwarnings("ignore", category=UserWarning, module="PIL")
 
-import os
-from src.train import train_model
 
 if __name__ == "__main__":
     # 数据集路径（需要包含train、val、test三个子文件夹）
@@ -20,10 +21,10 @@ if __name__ == "__main__":
             data_dir=data_dir,
             num_epochs=num_epochs,
             lr=learning_rate,
-            weight_decay=weight_decay
+            weight_decay=weight_decay,
         )
 
-        print(f"\n训练完成!")
+        print("\n训练完成!")
         print(f"模型保存路径: {model_path}")
         print(f"识别类别: {classes}")
 

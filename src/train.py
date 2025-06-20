@@ -1,16 +1,15 @@
+import json
+from datetime import datetime
+
+import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from sklearn.metrics import classification_report
+from tqdm import tqdm
+
 from src.model import FruitVegClassifier
 from src.utils import get_data_loaders
-from tqdm import tqdm
-import matplotlib.pyplot as plt
-import os
-from sklearn.metrics import confusion_matrix, classification_report
-import seaborn as sns
-import json
-import numpy as np
-from datetime import datetime
 
 
 def train_model(data_dir, num_epochs=50, lr=0.0001, weight_decay=1e-5):
@@ -29,7 +28,9 @@ def train_model(data_dir, num_epochs=50, lr=0.0001, weight_decay=1e-5):
     model = FruitVegClassifier(num_classes=len(classes)).to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
-    scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min', patience=5, factor=0.5)
+    scheduler = optim.lr_scheduler.ReduceLROnPlateau(
+        optimizer, "min", patience=5, factor=0.5
+    )
 
     # 记录训练指标
     train_losses = []
@@ -52,7 +53,7 @@ def train_model(data_dir, num_epochs=50, lr=0.0001, weight_decay=1e-5):
                 loss.backward()
                 optimizer.step()
                 running_loss += loss.item()
-                pbar.set_postfix({'loss': f"{loss.item():.4f}"})
+                pbar.set_postfix({"loss": f"{loss.item():.4f}"})
 
         # 计算平均训练损失
         avg_train_loss = running_loss / len(train_loader)
@@ -72,10 +73,12 @@ def train_model(data_dir, num_epochs=50, lr=0.0001, weight_decay=1e-5):
             best_model_state = model.state_dict().copy()
             print(f"Epoch {epoch + 1}: 保存最佳模型 (验证准确率: {val_acc:.2f}%)")
 
-        print(f"Epoch {epoch + 1}/{num_epochs}, "
-              f"训练损失: {avg_train_loss:.4f}, "
-              f"验证损失: {val_loss:.4f}, "
-              f"验证准确率: {val_acc:.2f}%")
+        print(
+            f"Epoch {epoch + 1}/{num_epochs}, "
+            f"训练损失: {avg_train_loss:.4f}, "
+            f"验证损失: {val_loss:.4f}, "
+            f"验证准确率: {val_acc:.2f}%"
+        )
 
     # 加载最佳模型
     model.load_state_dict(best_model_state)
@@ -88,18 +91,21 @@ def train_model(data_dir, num_epochs=50, lr=0.0001, weight_decay=1e-5):
     # 保存模型
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     model_path = f"model_{timestamp}.pth"
-    torch.save({
-        'model_state_dict': model.state_dict(),
-        'class_names': classes,
-        'num_classes': len(classes),
-        'training_metrics': {
-            'train_losses': train_losses,
-            'val_losses': val_losses,
-            'val_accuracies': val_accuracies,
-            'best_val_accuracy': best_val_acc,
-            'test_accuracy': test_acc
-        }
-    }, model_path)
+    torch.save(
+        {
+            "model_state_dict": model.state_dict(),
+            "class_names": classes,
+            "num_classes": len(classes),
+            "training_metrics": {
+                "train_losses": train_losses,
+                "val_losses": val_losses,
+                "val_accuracies": val_accuracies,
+                "best_val_accuracy": best_val_acc,
+                "test_accuracy": test_acc,
+            },
+        },
+        model_path,
+    )
     print(f"模型已保存至: {model_path}")
 
     # 生成详细评估报告
@@ -109,24 +115,30 @@ def train_model(data_dir, num_epochs=50, lr=0.0001, weight_decay=1e-5):
 
     # 保存评估结果
     results_path = f"evaluation_results_{timestamp}.json"
-    with open(results_path, 'w', encoding='utf-8') as f:
-        json.dump({
-            'timestamp': timestamp,
-            'test': test_results,
-            'val': val_results,
-            'classes': classes,
-            'training_metrics': {
-                'train_losses': [float(loss) for loss in train_losses],
-                'val_losses': [float(loss) for loss in val_losses],
-                'val_accuracies': [float(acc) for acc in val_accuracies],
-                'best_val_accuracy': float(best_val_acc),
-                'test_accuracy': float(test_acc)
-            }
-        }, f, ensure_ascii=False, indent=2)
+    with open(results_path, "w", encoding="utf-8") as f:
+        json.dump(
+            {
+                "timestamp": timestamp,
+                "test": test_results,
+                "val": val_results,
+                "classes": classes,
+                "training_metrics": {
+                    "train_losses": [float(loss) for loss in train_losses],
+                    "val_losses": [float(loss) for loss in val_losses],
+                    "val_accuracies": [float(acc) for acc in val_accuracies],
+                    "best_val_accuracy": float(best_val_acc),
+                    "test_accuracy": float(test_acc),
+                },
+            },
+            f,
+            ensure_ascii=False,
+            indent=2,
+        )
 
     # 绘制训练指标
-    plot_training_metrics(train_losses, val_losses, val_accuracies,
-                          f"training_metrics_{timestamp}.png")
+    plot_training_metrics(
+        train_losses, val_losses, val_accuracies, f"training_metrics_{timestamp}.png"
+    )
 
     # 绘制类别准确率
     plot_class_accuracy(test_results, f"test_class_accuracy_{timestamp}.png")
@@ -175,24 +187,26 @@ def evaluate_model_detailed(model, data_loader, device, classes):
             all_labels.extend(labels.cpu().numpy())
 
     # 生成分类报告
-    report = classification_report(all_labels, all_preds, target_names=classes, output_dict=True)
+    report = classification_report(
+        all_labels, all_preds, target_names=classes, output_dict=True
+    )
 
     # 提取每个类别的指标
     class_results = {}
     for class_name in classes:
         if class_name in report:
             class_results[class_name] = {
-                'precision': report[class_name]['precision'],
-                'recall': report[class_name]['recall'],
-                'f1-score': report[class_name]['f1-score'],
-                'support': report[class_name]['support']
+                "precision": report[class_name]["precision"],
+                "recall": report[class_name]["recall"],
+                "f1-score": report[class_name]["f1-score"],
+                "support": report[class_name]["support"],
             }
 
     # 添加总体指标
-    class_results['overall'] = {
-        'accuracy': report['accuracy'],
-        'macro_avg': report['macro avg'],
-        'weighted_avg': report['weighted avg']
+    class_results["overall"] = {
+        "accuracy": report["accuracy"],
+        "macro_avg": report["macro avg"],
+        "weighted_avg": report["weighted avg"],
     }
 
     return class_results
@@ -204,20 +218,20 @@ def plot_training_metrics(train_losses, val_losses, val_accuracies, filename):
 
     # 绘制损失曲线
     plt.subplot(1, 2, 1)
-    plt.plot(train_losses, label='训练损失')
-    plt.plot(val_losses, label='验证损失')
-    plt.title('训练和验证损失')
-    plt.xlabel('Epoch')
-    plt.ylabel('损失')
+    plt.plot(train_losses, label="训练损失")
+    plt.plot(val_losses, label="验证损失")
+    plt.title("训练和验证损失")
+    plt.xlabel("Epoch")
+    plt.ylabel("损失")
     plt.legend()
     plt.grid(True)
 
     # 绘制准确率曲线
     plt.subplot(1, 2, 2)
-    plt.plot(val_accuracies, label='验证准确率', color='red')
-    plt.title('验证准确率')
-    plt.xlabel('Epoch')
-    plt.ylabel('准确率 (%)')
+    plt.plot(val_accuracies, label="验证准确率", color="red")
+    plt.title("验证准确率")
+    plt.xlabel("Epoch")
+    plt.ylabel("准确率 (%)")
     plt.legend()
     plt.grid(True)
 
@@ -227,14 +241,14 @@ def plot_training_metrics(train_losses, val_losses, val_accuracies, filename):
 
 def plot_class_accuracy(results, filename):
     """绘制每个类别的准确率柱状图"""
-    classes = [c for c in results if c != 'overall']
-    f1_scores = [results[c]['f1-score'] for c in classes]
+    classes = [c for c in results if c != "overall"]
+    f1_scores = [results[c]["f1-score"] for c in classes]
 
     plt.figure(figsize=(12, 6))
-    plt.bar(classes, f1_scores, color='skyblue')
-    plt.title('各类别F1分数')
-    plt.xlabel('类别')
-    plt.ylabel('F1分数')
-    plt.xticks(rotation=45, ha='right')
+    plt.bar(classes, f1_scores, color="skyblue")
+    plt.title("各类别F1分数")
+    plt.xlabel("类别")
+    plt.ylabel("F1分数")
+    plt.xticks(rotation=45, ha="right")
     plt.tight_layout()
     plt.savefig(filename)
