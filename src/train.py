@@ -11,6 +11,10 @@ from tqdm import tqdm
 from src.model import FruitVegClassifier
 from src.utils import get_data_loaders
 
+# 配置 matplotlib 中文字体
+plt.rcParams["font.sans-serif"] = ["SimHei", "Microsoft YaHei", "DejaVu Sans"]
+plt.rcParams["axes.unicode_minus"] = False
+
 
 def train_model(data_dir, num_epochs=50, lr=0.0001, weight_decay=1e-5):
     """训练模型并评估每个类别的性能"""

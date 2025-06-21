@@ -11,13 +11,4 @@ wheels/
 
 # Dataset (contains training data)
 dataset/
-
-# Training-related files
-src/train.py
-src/main.py
-
-# Training outputs and results
-src/evaluation_results_*.json
-src/training_metrics_*.png\
-src/test_class_accuracy_*.png
-src/val_class_accuracy_*.png
+deprecated/
