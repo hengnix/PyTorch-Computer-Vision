@@ -1,4 +1,5 @@
 import json
+import os
 from datetime import datetime
 
 import matplotlib.pyplot as plt
@@ -90,11 +91,22 @@ def train_model(data_dir, num_epochs=50, lr=0.0001, weight_decay=1e-5):
     # 评估测试集
     print("\n在测试集上评估模型...")
     test_loss, test_acc = evaluate_model(model, test_loader, criterion, device)
-    print(f"测试准确率: {test_acc:.2f}%")
-
-    # 保存模型
+    print(f"测试准确率: {test_acc:.2f}%")  # 保存模型
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    model_path = f"model_{timestamp}.pth"
+
+    # 创建保存目录
+    project_root = os.path.dirname(os.path.dirname(__file__))
+    models_dir = os.path.join(project_root, "models")
+    results_dir = os.path.join(project_root, "results")
+    plots_dir = os.path.join(results_dir, "plots")
+    metrics_dir = os.path.join(results_dir, "metrics")
+
+    # 确保目录存在
+    os.makedirs(models_dir, exist_ok=True)
+    os.makedirs(plots_dir, exist_ok=True)
+    os.makedirs(metrics_dir, exist_ok=True)
+
+    model_path = os.path.join(models_dir, f"model_{timestamp}.pth")
     torch.save(
         {
             "model_state_dict": model.state_dict(),
@@ -115,10 +127,10 @@ def train_model(data_dir, num_epochs=50, lr=0.0001, weight_decay=1e-5):
     # 生成详细评估报告
     print("\n生成详细评估报告...")
     test_results = evaluate_model_detailed(model, test_loader, device, classes)
-    val_results = evaluate_model_detailed(model, val_loader, device, classes)
-
-    # 保存评估结果
-    results_path = f"evaluation_results_{timestamp}.json"
+    val_results = evaluate_model_detailed(
+        model, val_loader, device, classes
+    )  # 保存评估结果
+    results_path = os.path.join(metrics_dir, f"evaluation_results_{timestamp}.json")
     with open(results_path, "w", encoding="utf-8") as f:
         json.dump(
             {
@@ -137,16 +149,21 @@ def train_model(data_dir, num_epochs=50, lr=0.0001, weight_decay=1e-5):
             f,
             ensure_ascii=False,
             indent=2,
-        )
-
-    # 绘制训练指标
+        )  # 绘制训练指标
     plot_training_metrics(
-        train_losses, val_losses, val_accuracies, f"training_metrics_{timestamp}.png"
+        train_losses,
+        val_losses,
+        val_accuracies,
+        os.path.join(plots_dir, f"training_metrics_{timestamp}.png"),
     )
 
     # 绘制类别准确率
-    plot_class_accuracy(test_results, f"test_class_accuracy_{timestamp}.png")
-    plot_class_accuracy(val_results, f"val_class_accuracy_{timestamp}.png")
+    plot_class_accuracy(
+        test_results, os.path.join(plots_dir, f"test_class_accuracy_{timestamp}.png")
+    )
+    plot_class_accuracy(
+        val_results, os.path.join(plots_dir, f"val_class_accuracy_{timestamp}.png")
+    )
 
     print(f"评估结果已保存至: {results_path}")
     return model, classes, model_path

@@ -15,10 +15,11 @@ class FruitVegClassifierGUI:
         self.root = root
         self.root.title("水果和蔬菜分类器")
         self.root.geometry("800x600")
-        self.root.resizable(True, True)  # 状态变量
+        self.root.resizable(True, True)
+        # 默认模型路径
         self.model_path = os.path.join(
-            os.path.dirname(__file__), "model.pth"
-        )  # 默认模型路径
+            os.path.dirname(os.path.dirname(__file__)), "models", "model.pth"
+        )
         self.is_predicting = False
         self.last_prediction = None
         self.current_image = None
